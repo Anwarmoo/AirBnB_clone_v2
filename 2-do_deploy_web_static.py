@@ -25,31 +25,31 @@ def do_deploy(archive_path):
         return False
 
     # Delete the archive folder on the server
-    if run("rm -rf /data/web_static/releases/{}/".
+    if run("sudo rm -rf /data/web_static/releases/{}/".
            format(folder)).failed is True:
         print("Deleting folder with archive(if already exists) failed")
         return False
 
     # Create a new archive folder
-    if run("mkdir -p /data/web_static/releases/{}/".
+    if run("sudo mkdir -p /data/web_static/releases/{}/".
            format(folder)).failed is True:
         print("Creating new archive folder failed")
         return False
 
     # Uncompress archive to /data/web_static/current/ directory
-    if run("tar -xzf /tmp/{} -C /data/web_static/releases/{}/".
+    if run("sudo tar -xzf /tmp/{} -C /data/web_static/releases/{}/".
            format(fullFile, folder)).failed is True:
         print("Uncompressing archive to failed")
         return False
 
     # Deletes latest archive from the server
-    if run("rm /tmp/{}".format(fullFile)).failed is True:
+    if run("sudo rm /tmp/{}".format(fullFile)).failed is True:
         print("Deleting archive from /tmp/ directory dailed")
         return False
 
     # Move folder from web_static to its parent folder,to expose the index
     # files outsite the /we_static path
-    if run("mv /data/web_static/releases/{}/web_static/* "
+    if run("sudo mv /data/web_static/releases/{}/web_static/* "
            "/data/web_static/releases/{}/".
            format(folder, folder)).failed is True:
         print("Moving content to archive folder before deletion failed")
@@ -57,18 +57,18 @@ def do_deploy(archive_path):
 
     # Delete the empty web_static file, as its content have been moved to
     # its parent directory
-    if run("rm -rf /data/web_static/releases/{}/web_static".
+    if run("sudo rm -rf /data/web_static/releases/{}/web_static".
            format(folder)).failed is True:
         print("Deleting web_static folder failed")
         return False
 
     # Delete current folder being served (the symbolic link)
-    if run("rm -rf /data/web_static/current").failed is True:
+    if run("sudo rm -rf /data/web_static/current").failed is True:
         print("Deleting 'current' folder failed")
         return False
 
     # Create new symbolic link on web server linked to new code version
-    if run("ln -s /data/web_static/releases/{}/ /data/web_static/current".
+    if run("sudo ln -s /data/web_static/releases/{}/ /data/web_static/current".
            format(folder)).failed is True:
         print("Creating new symbolic link to new code version failed")
         return False
